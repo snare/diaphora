@@ -157,11 +157,11 @@ class CHtmlViewer(PluginForm):
     else:
       self.parent = self.FormToPySideWidget(form)
     self.PopulateForm()
-    
+
     self.browser = None
     self.layout = None
     return 1
-  
+
   def PopulateForm(self):
     self.layout = QtWidgets.QVBoxLayout()
     self.browser = QtWidgets.QTextBrowser()
@@ -221,7 +221,7 @@ class CChooser(Choose2):
     self.cmd_show_pseudo = None
     self.cmd_highlight_functions = None
     self.cmd_unhighlight_functions = None
-    
+
     self.selected_items = []
 
   def OnClose(self):
@@ -277,7 +277,7 @@ class CChooser(Choose2):
     t = self.Show()
     if t < 0:
         return False
-    
+
     if self.show_commands and (self.cmd_diff_asm is None or force):
       # create aditional actions handlers
       self.cmd_diff_asm = self.AddCommand("Diff assembly")
@@ -356,7 +356,7 @@ class CChooser(Choose2):
 
   def OnSelectionChange(self, sel_list):
     self.selected_items = sel_list
-  
+
   def OnGetLineAttr(self, n):
     if not self.title.startswith("Unmatched"):
       item = self.items[n]
@@ -375,7 +375,7 @@ class CBinDiffExporterSetup(Form):
   If no SQLite diff database is selected, it will just export the current IDA database to SQLite format. Leave the 2nd field empty if you are
   exporting the first database.
 
-  SQLite databases:                                                                                                                    Export filter limits:  
+  SQLite databases:                                                                                                                    Export filter limits:
   <#Select a file to export the current IDA database to SQLite format#Export IDA database to SQLite  :{iFileSave}> <#Minimum address to find functions to export#From address:{iMinEA}>
   <#Select the SQLite database to diff against                       #SQLite database to diff against:{iFileOpen}> <#Maximum address to find functions to export#To address  :{iMaxEA}>
 
@@ -407,7 +407,7 @@ class CBinDiffExporterSetup(Form):
                                                "rIgnoreAllNames",
                                                "rIgnoreSmallFunctions"))}
     Form.__init__(self, s, args)
-    
+
   def set_options(self, opts):
     if opts.file_out is not None:
       self.iFileSave.value = opts.file_out
@@ -425,7 +425,7 @@ class CBinDiffExporterSetup(Form):
     self.rIgnoreAllNames.checked = opts.ignore_all_names
     self.rIgnoreSmallFunctions.checked = opts.ignore_small_functions
     self.rFuncSummariesOnly.checked = opts.func_summaries_only
-  
+
   def get_options(self):
     opts = dict(
       file_out = self.iFileSave.value,
@@ -529,7 +529,7 @@ class CDiffGraphViewer(GraphViewer):
 
       for key in self.graph:
         self.nodes[key] = self.AddNode([key, self.graph[key]])
-        
+
       for key in self.relations:
         if not key in self.nodes:
           self.nodes[key] = self.AddNode([key, [[0, 0, ""]]])
@@ -601,18 +601,18 @@ TIMEOUT_LIMIT = 60 * 3
 #-----------------------------------------------------------------------
 # Fix for people using IDASkins with very h4x0r $tYl3z like the
 # Consonance color scheme
-HtmlDiff._styles = """ 
+HtmlDiff._styles = """
 table.diff {
   font-family:Courier;
   border:medium;
   background-color:#ffffff;
   color:#000000
 }
-.diff_header {background-color:#e0e0e0} 
-td.diff_header {text-align:right} 
-.diff_next {background-color:#c0c0c0} 
-.diff_add {background-color:#aaffaa} 
-.diff_chg {background-color:#ffff77} 
+.diff_header {background-color:#e0e0e0}
+td.diff_header {text-align:right}
+.diff_next {background-color:#c0c0c0}
+.diff_add {background-color:#aaffaa}
+.diff_chg {background-color:#ffff77}
 .diff_sub {background-color:#ffaaaa}"""
 
 #-----------------------------------------------------------------------
@@ -649,14 +649,14 @@ class CBinDiff:
     self.unmatched_primary = None
 
     self.last_diff_db = None
-    
+
     ####################################################################
     # LIMITS
     #
     # Do not run heuristics for more than 3 minutes per each 20.000
     # functions.
     self.timeout = TIMEOUT_LIMIT
-    # It's typical in SQL queries to get a cartesian product of the 
+    # It's typical in SQL queries to get a cartesian product of the
     # results in the functions tables. Do not process more than this
     # value per each 20k functions.
     self.max_processed_rows = MAX_PROCESSED_ROWS
@@ -767,7 +767,7 @@ class CBinDiff:
 
     sql = """ create table if not exists version (value text) """
     cur.execute(sql)
-    
+
     sql = """ create table if not exists instructions (
                 id integer primary key,
                 address text unique,
@@ -837,7 +837,7 @@ class CBinDiff:
 
     sql = "create index if not exists idx_names on functions(names)"
     cur.execute(sql)
-    
+
     sql = "create index if not exists idx_asm_pseudo on functions(assembly, pseudocode)"
     cur.execute(sql)
 
@@ -858,7 +858,7 @@ class CBinDiff:
 
     sql = "create index if not exists idx_composite5 on functions(pseudocode_lines, pseudocode_primes)"
     cur.execute(sql)
-    
+
     sql = "create index if not exists idx_composite6 on functions(names, mnemonics)"
     cur.execute(sql)
 
@@ -942,7 +942,7 @@ class CBinDiff:
       if len(rows) != 1:
         Warning("Malformed results database!")
         return False
-      
+
       row = rows[0]
       version = row["version"]
       if version != VERSION_VALUE:
@@ -956,12 +956,12 @@ class CBinDiff:
         main_db = AskFile(0, main_db, "Select the primary database path")
         if main_db is None:
           return False
-      
+
       if not os.path.exists(diff_db):
         diff_db = AskFile(0, main_db, "Select the secondary database path")
         if diff_db is None:
           return False
-      
+
       self.reinit(main_db, diff_db)
 
       sql = "select * from results"
@@ -981,7 +981,7 @@ class CBinDiff:
         desc = row["description"]
         ratio = float(row["ratio"])
         choose.add_item(CChooser.Item(ea1, name1, ea2, name2, desc, ratio))
-      
+
       sql = "select * from unmatched"
       cur.execute(sql)
       for row in result_iter(cur):
@@ -1030,7 +1030,7 @@ class CBinDiff:
           l = list(item)
           l.insert(0, 'best')
           cur.execute(results_sql, l)
-        
+
         for item in self.partial_chooser.items:
           l = list(item)
           l.insert(0, 'partial')
@@ -1040,7 +1040,7 @@ class CBinDiff:
           l = list(item)
           l.insert(0, 'unreliable')
           cur.execute(results_sql, l)
-        
+
         for item in self.unmatched_primary.items:
           l = list(item)
           l.insert(0, 'primary')
@@ -1138,7 +1138,7 @@ class CBinDiff:
           else:
             assembly[block_ea] = ["loc_%x:" % x, disasm]
 
-        
+
         decoded_size = idaapi.decode_insn(x)
         if idaapi.cmd.Operands[0].type in [o_mem, o_imm, o_far, o_near, o_displ]:
           decoded_size -= idaapi.cmd.Operands[0].offb
@@ -1151,7 +1151,7 @@ class CBinDiff:
         if curr_bytes is None or len(curr_bytes) != decoded_size:
             log("Failed to read %d bytes at [%08x]" % (decoded_size, x))
             continue
-        
+
         bytes_hash.append(curr_bytes)
         bytes_sum += sum(map(ord, curr_bytes))
 
@@ -1247,7 +1247,7 @@ class CBinDiff:
         if val > 1:
           strongly_connected_spp *= self.primes[val]
     except:
-      # XXX: FIXME: The original implementation that we're using is 
+      # XXX: FIXME: The original implementation that we're using is
       # recursive and can fail. We really need to create our own non
       # recursive version.
       strongly_connected = []
@@ -1264,7 +1264,7 @@ class CBinDiff:
     asm = []
     keys = assembly.keys()
     keys.sort()
-    
+
     # After sorting our the addresses of basic blocks, be sure that the
     # very first address is always the entry point, no matter at what
     # address it is.
@@ -1566,7 +1566,7 @@ class CBinDiff:
     Wait()
 
   def get_valid_definition(self, defs):
-    """ Try to get a valid structure definition by removing (yes) the 
+    """ Try to get a valid structure definition by removing (yes) the
         invalid characters typically found in IDA's generated structs."""
     ret = defs.replace("?", "_").replace("@", "_")
     ret = ret.replace("$", "_").replace("#", "_")
@@ -1671,7 +1671,7 @@ class CBinDiff:
       buf1 = "%s proc near\n%s\n%s endp" % (row1[2], asm1, row1[2])
       buf2 = "%s proc near\n%s\n%s endp" % (row2[2], asm2, row2[2])
       src = html_diff.make_file(buf1.split("\n"), buf2.split("\n"))
-      
+
       title = "Diff assembler %s - %s" % (row1[2], row2[2])
       cdiffer = CHtmlViewer()
       cdiffer.Show(src, title)
@@ -1747,12 +1747,12 @@ class CBinDiff:
     for rep in reps:
       tmp = re.sub(rep, "+XXXX+", tmp)
     tmp = re.sub("\.\.[a-f0-9A-F]{8}", "XXX", tmp)
-    
+
     # Strip any possible remaining white-space character at the end of
     # the cleaned-up instruction
     tmp = re.sub("[ \t\n]+$", "", tmp)
 
-    # Replace aName_XXX with aXXX, useful to ignore small changes in 
+    # Replace aName_XXX with aXXX, useful to ignore small changes in
     # offsets created to strings
     tmp = re.sub("a[A-Z]+[a-z0-9]+_[0-9]+", "aXXX", tmp)
 
@@ -2187,7 +2187,7 @@ class CBinDiff:
       name1 = item[2]
       if name1.startswith("sub_"):
         new_items.append(item)
-    
+
     self.import_items(new_items)
 
   def re_diff(self):
@@ -2212,7 +2212,7 @@ class CBinDiff:
   def import_all(self, items):
     try:
       self.do_import_all(items)
-      
+
       msg = "AUTOHIDE DATABASE\nHIDECANCEL\nAll functions were imported. Do you want to relaunch the diffing process?"
       if askyn_c(1, msg) == 1:
         self.db.execute("detach diff")
@@ -2343,7 +2343,7 @@ class CBinDiff:
                      f.function_hash, df.function_hash
                 from functions f,
                      diff.functions df
-               where f.function_hash = df.function_hash 
+               where f.function_hash = df.function_hash
                  and f.instructions > 5 and df.instructions > 5 """
     log_refresh("Finding with heuristic 'Function hash'")
     self.add_matches_from_query(sql, choose)
@@ -2437,7 +2437,7 @@ class CBinDiff:
   def decompile_and_get(self, ea):
     if not init_hexrays_plugin():
       return False
-    
+
     f = get_func(ea)
     if f is None:
       return False
@@ -2458,7 +2458,7 @@ class CBinDiff:
       line = tag_remove(sline.line);
       if line.startswith("//"):
         continue
-      
+
       if first_line is None:
         first_line = line
       else:
@@ -2604,7 +2604,7 @@ class CBinDiff:
   def add_matches_from_query_ratio_max(self, sql, best, partial, val):
     if self.all_functions_matched():
       return
-    
+
     cur = self.db_cursor()
     try:
       cur.execute(sql)
@@ -2662,7 +2662,7 @@ class CBinDiff:
     """ Warning: use this *only* if the ratio is known to be 1.00 """
     if self.all_functions_matched():
       return
-    
+
     cur = self.db_cursor()
     try:
       cur.execute(sql)
@@ -2695,7 +2695,7 @@ class CBinDiff:
 
   def search_small_differences(self, choose):
     cur = self.db_cursor()
-    
+
     # Same basic blocks, edges, mnemonics, etc... but different names
     sql = """ select distinct f.address ea, f.name name1, df.name name2,
                      f.names, df.names, df.address ea2
@@ -2796,7 +2796,7 @@ class CBinDiff:
         rid = row[0]
     finally:
       cur.close()
-    
+
     return rid
 
   def find_matches_in_hole(self, last, item, row):
@@ -2811,7 +2811,7 @@ class CBinDiff:
       id1 = row["id1"]
       id2 = row["id2"]
       sql = """ select * from functions where id = ? """ + postfix + """
-                union all 
+                union all
                 select * from diff.functions where id = ? """ + postfix
 
       thresold = min(0.6, float(item[5]))
@@ -2919,7 +2919,7 @@ class CBinDiff:
                     f.pseudocode_primes, df.pseudocode_primes
                from functions f,
                     diff.functions df
-              where f.nodes = df.nodes 
+              where f.nodes = df.nodes
                 and f.edges = df.edges
                 and f.indegree = df.indegree
                 and f.outdegree = df.outdegree
@@ -2939,7 +2939,7 @@ class CBinDiff:
                 and f.loops = df.loops
                 and f.tarjan_topological_sort = df.tarjan_topological_sort
                 and f.strongly_connected_spp = df.strongly_connected_spp """ + postfix + """
-              union 
+              union
              select f.address, f.name, df.address, df.name,
                     'Most attributes' description,
                     f.pseudocode, df.pseudocode,
@@ -2947,7 +2947,7 @@ class CBinDiff:
                     f.pseudocode_primes, df.pseudocode_primes
                from functions f,
                     diff.functions df
-               where f.nodes = df.nodes 
+               where f.nodes = df.nodes
                  and f.edges = df.edges
                  and f.indegree = df.indegree
                  and f.outdegree = df.outdegree
@@ -3110,7 +3110,7 @@ class CBinDiff:
                 and f.names = df.names
                 and df.names != '[]'
                 and df.pseudocode_lines > 5
-                and df.pseudocode is not null 
+                and df.pseudocode is not null
                 and f.pseudocode is not null""" + postfix
     log_refresh("Finding with heuristic 'Similar pseudo-code and names'")
     self.add_matches_from_query_ratio(sql, self.best_chooser, self.partial_chooser, self.unreliable_chooser)
@@ -3124,7 +3124,7 @@ class CBinDiff:
                       diff.functions df
                 where f.pseudocode_lines = df.pseudocode_lines
                   and df.pseudocode_lines > 5
-                  and df.pseudocode is not null 
+                  and df.pseudocode is not null
                   and f.pseudocode is not null""" + postfix
       log_refresh("Finding with heuristic 'Similar pseudo-code'")
       self.add_matches_from_query_ratio_max(sql, choose, self.unreliable_chooser, 0.6)
@@ -3260,11 +3260,11 @@ class CBinDiff:
 
   def find_experimental_matches(self):
     choose = self.unreliable_chooser
-    
+
     # Call address sequence heuristic
     self.find_from_matches(self.best_chooser.items)
     self.find_from_matches(self.partial_chooser.items)
-    
+
     postfix = ""
     if self.ignore_small_functions:
       postfix = " and f.instructions > 5 and df.instructions > 5 "
@@ -3278,7 +3278,7 @@ class CBinDiff:
                       diff.functions df
                 where f.pseudocode_lines = df.pseudocode_lines
                   and df.pseudocode_lines <= 5
-                  and df.pseudocode is not null 
+                  and df.pseudocode is not null
                   and f.pseudocode is not null""" + postfix
       log_refresh("Finding with heuristic 'Similar small pseudo-code'")
       self.add_matches_from_query_ratio_max(sql, self.partial_chooser, choose, 0.49)
@@ -3332,7 +3332,7 @@ class CBinDiff:
                   and df.names != '[]'""" + postfix
     log_refresh("Finding with heuristic 'Same low complexity and names'")
     self.add_matches_from_query_ratio_max(sql, self.partial_chooser, choose, 0.5)
-  
+
     if self.slow_heuristics:
       # For large databases (>25k functions) it may cause, for a reason,
       # the following error: OperationalError: database or disk is full
@@ -3343,7 +3343,7 @@ class CBinDiff:
                  f.pseudocode_primes, df.pseudocode_primes
             from functions f,
                  diff.functions df
-           where f.nodes = df.nodes 
+           where f.nodes = df.nodes
              and f.edges = df.edges
              and f.indegree = df.indegree
              and f.outdegree = df.outdegree
@@ -3463,7 +3463,7 @@ class CBinDiff:
                       f.pseudocode_primes, df.pseudocode_primes
                  from functions f,
                       diff.functions df
-                where df.pseudocode is not null 
+                where df.pseudocode is not null
                   and f.pseudocode is not null
                   and f.pseudocode_lines = df.pseudocode_lines
                   and df.pseudocode_lines > 5""" + postfix
@@ -3575,7 +3575,7 @@ or selecting Edit -> Plugins -> Diaphora - Show results""")
 
     try:
       log_refresh("Performing diffing...", True)
-      
+
       do_continue = True
       if self.equal_db():
         log("The databases seems to be 100% equal")
@@ -3598,7 +3598,7 @@ or selecting Edit -> Plugins -> Diaphora - Show results""")
           # Find using likely unreliable methods modified functions
           log_refresh("Finding probably unreliable matches")
           self.find_unreliable_matches()
-        
+
         if self.experimental:
           # Find using experimental methods modified functions
           log_refresh("Finding experimental matches")
@@ -3626,7 +3626,7 @@ def remove_file(filename):
     # Fix for Bug #5: https://github.com/joxeankoret/diaphora/issues/5
     #
     # For some reason, in Windows, the handle to the SQLite database is
-    # not closed, and I really try to be sure that all the databases are 
+    # not closed, and I really try to be sure that all the databases are
     # detached, no cursor is leaked, etc... So, in case we cannot remove
     # the database file because it's still being used by IDA in Windows
     # for some unknown reason, just drop the database's tables and after
@@ -3650,7 +3650,7 @@ class BinDiffOptions:
     self.use_decompiler = kwargs.get('use_decompiler', True)
     self.unreliable = kwargs.get('unreliable', True)
     self.slow = kwargs.get('slow', True)
-    # Enable, by default, relaxed calculations on difference ratios for 
+    # Enable, by default, relaxed calculations on difference ratios for
     # 'big' databases (>20k functions)
     self.relax = kwargs.get('relax', total_functions > 20000)
     if self.relax:
@@ -3682,7 +3682,7 @@ def _diff_or_export(use_ui, **options):
     return
 
   opts = BinDiffOptions(**options)
-  
+
   if use_ui:
     x = CBinDiffExporterSetup()
     x.Compile()
@@ -3690,7 +3690,7 @@ def _diff_or_export(use_ui, **options):
 
     if not x.Execute():
       return
-    
+
     opts = x.get_options()
 
   if opts.file_out == opts.file_in:
@@ -3770,7 +3770,8 @@ def diff_or_export_ui():
 def diff_or_export(**options):
   return _diff_or_export(False, **options)
 
-if __name__ == "__main__":
+
+def main():
   if os.getenv("DIAPHORA_AUTO") is not None:
     file_out = os.getenv("DIAPHORA_EXPORT_FILE")
     if file_out is None:
