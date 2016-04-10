@@ -14,6 +14,18 @@ Please note that only the last 2 versions of IDA will be supported. As of today,
 
 You can check the tutorial https://github.com/joxeankoret/diaphora/blob/master/doc/diaphora_help.pdf
 
+Install Diaphora into your Python packages:
+
+    $ python setup.py install
+
+Or, if you're using a version of IDA with an older version of Python:
+
+    $ python2.6 setup.py install
+
+In IDA you can then load diaphora from the Python prompt:
+
+    > import diaphora;diaphora.main()
+
 ## Screenshots
 
 This is a screenshot of Diaphora diffing the [Microsoft bulletin MS15-034](https://technet.microsoft.com/en-us/library/security/ms15-034.aspx):
